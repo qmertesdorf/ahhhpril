@@ -1,4 +1,4 @@
-import users from "users";
+const users = require("./users.js");
 const express = require("express");
 const Discord = require("discord.js");
 const tokenJSON = require('./auth.json');
