@@ -35,14 +35,21 @@ client.on('ready', () => {
 // client.setInterval(())
 
 const checkForDailyPost = () => {
-  const matchingPosts = CHANNELS.filter(channel => {
+  const matchingPosts = Promise.all(CHANNELS.map(channel => {
     //TODO - look into message.array instead of message.map(e => e)
-    return mostRecentMessage = channel.fetchMessages({limit: 1}).then(message => Date.now() - message.map(e => e)[0].createdTimestamp);
-  })
-  return matchingPosts
+    // channel.fetchMessages({limit: 1}).then(message => (Date.now() - message.map(e => e)[0].createdTimestamp > 8640));
+    let messageIsValid;
+    const channels = channel.fetchMessages({limit: 1}).then(message => {
+      messageIsValid = Date.now() - message.map(e => e)[0].createdTimestamp > 8640000
+    });
+    return messageIsValid;
+  }))
+
+  return matchingPosts;
 }
 
 const getKeyFromValue = (obj, val) => {
+  //Clean up and make more specific
   return Object.keys(obj).find((key) => {
     return Object.values(obj[key])[0] === Object.values(val)[0] && Object.values(obj[key])[1] === Object.values(val)[1];
   })
